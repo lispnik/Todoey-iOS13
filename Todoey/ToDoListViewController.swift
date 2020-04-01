@@ -13,6 +13,12 @@ class ToDoListViewController: UITableViewController {
     
     @IBOutlet weak var searchBar: UISearchBar!
     
+    var selectedCategory: Category? {
+        didSet {
+            loadItems()
+        }
+    }
+    
     var itemArray: [Item] = []
     
     var context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
@@ -26,11 +32,19 @@ class ToDoListViewController: UITableViewController {
         }
     }
 
-    func loadItems(with request: NSFetchRequest<Item> = Item.fetchRequest()) {
-        do {
-            self.itemArray = try self.context.fetch(request)
-        } catch {
-            print("Error fetching \(error)")
+    func loadItems(with request: NSFetchRequest<Item> = Item.fetchRequest(), predicate: NSPredicate? = nil) {
+        if let category = selectedCategory {
+            let categoryPredicate = NSPredicate(format: "parentCategory.name MATCHES %@", category.name!)
+            if let predicate = predicate {
+                request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [categoryPredicate, predicate])
+            } else {
+                request.predicate = categoryPredicate
+            }
+            do {
+                self.itemArray = try self.context.fetch(request)
+            } catch {
+                print("Error fetching \(error)")
+            }
         }
         tableView.reloadData()
     }
@@ -46,6 +60,7 @@ class ToDoListViewController: UITableViewController {
             if let title = textField.text {
                 item.title = title
                 item.done = false
+                item.parentCategory = self.selectedCategory
             }
             self.itemArray.append(item)
             self.saveItems()
@@ -62,7 +77,6 @@ class ToDoListViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         searchBar.delegate = self
-        loadItems()
     }
     
     //MARK - TableView Data Sources
@@ -102,7 +116,7 @@ extension ToDoListViewController: UISearchBarDelegate {
             request.predicate = predicate
             let sortDescriptor = NSSortDescriptor(key: "title", ascending: true)
             request.sortDescriptors = [sortDescriptor]
-            loadItems(with: request)
+            loadItems(with: request, predicate: predicate)
         }
     }
     
