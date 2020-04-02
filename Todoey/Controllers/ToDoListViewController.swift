@@ -29,7 +29,6 @@ class ToDoListViewController: UITableViewController {
 
     @IBAction func addPressed(_ sender: UIBarButtonItem) {
         var textField = UITextField()
-        
         let alert = UIAlertController(title: "Add New Todoey Item", message: "", preferredStyle: .alert)
         let action = UIAlertAction(title: "Add Item", style: .default) {
             action in
@@ -78,13 +77,17 @@ class ToDoListViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if let cell = tableView.cellForRow(at: indexPath) {
-            let item = items?[indexPath.row]
-//            item.done = !item.done
-//            cell.accessoryType = item.done ? .checkmark : .none
-//            tableView.reloadData()
-//            tableView.deselectRow(at: indexPath, animated: true)
+        if let item = items?[indexPath.row] {
+            do {
+                try realm.write{
+                    item.done = !item.done
+                }
+            } catch {
+                print("Error saving status \(error)")
+            }
         }
+        tableView.reloadData()
+        tableView.deselectRow(at: indexPath, animated: true)
     }
     
 }
