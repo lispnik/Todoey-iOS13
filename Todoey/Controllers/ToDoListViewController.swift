@@ -79,7 +79,7 @@ class ToDoListViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if let item = items?[indexPath.row] {
             do {
-                try realm.write{
+                try realm.write {
                     item.done = !item.done
                 }
             } catch {
@@ -98,13 +98,8 @@ extension ToDoListViewController: UISearchBarDelegate {
 
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         if let text = searchBar.text {
-//            let request: NSFetchRequest<Item> = Item.fetchRequest()
-//            let predicate = NSPredicate.init(format: "title CONTAINS[cd] %@", text)
-//            request.predicate = predicate
-//            let sortDescriptor = NSSortDescriptor(key: "title", ascending: true)
-//            request.sortDescriptors = [sortDescriptor]
-//            loadItems(with: request, predicate: predicate)
-            loadItems()
+            items = selectedCategory?.items.filter(NSPredicate.init(format: "title CONTAINS[cd] %@", text)).sorted(byKeyPath: "title", ascending: true)
+            self.tableView.reloadData()
         }
     }
     
