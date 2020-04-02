@@ -14,20 +14,9 @@ import RealmSwift
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
+    var realm: Realm = try! Realm()
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        print(Realm.Configuration.defaultConfiguration.fileURL)
-        let data = Data()
-        data.name = "Matthew"
-        data.age = 123
-        do {
-            let realm  = try Realm()
-            try realm.write {
-                realm.add(data)
-            }
-        } catch {
-            print("Error initializing realm \(error)")
-        }
         return true
     }
 
