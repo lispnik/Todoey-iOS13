@@ -11,7 +11,7 @@ import RealmSwift
 
 class ToDoListViewController: UITableViewController {
     
-    let realm = try! Realm()
+    var realm: Realm!
     @IBOutlet weak var searchBar: UISearchBar!
     
     var selectedCategory: Category? {
@@ -55,6 +55,7 @@ class ToDoListViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        realm = (UIApplication.shared.delegate as! AppDelegate).realm
         searchBar.delegate = self
     }
     
@@ -98,7 +99,9 @@ extension ToDoListViewController: UISearchBarDelegate {
 
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         if let text = searchBar.text {
-            items = selectedCategory?.items.filter(NSPredicate.init(format: "title CONTAINS[cd] %@", text)).sorted(byKeyPath: "title", ascending: true)
+            items = selectedCategory?.items
+                .filter(NSPredicate.init(format: "title CONTAINS[cd] %@", text))
+                .sorted(byKeyPath: "dateCreated", ascending: true)
             self.tableView.reloadData()
         }
     }

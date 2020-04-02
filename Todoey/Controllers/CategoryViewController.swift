@@ -11,7 +11,7 @@ import RealmSwift
 
 class CategoryViewController: UITableViewController {
     
-    let realm = try! Realm()
+    var realm: Realm!
     var categories: Results<Category>?
 
     @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
@@ -36,6 +36,7 @@ class CategoryViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        realm = (UIApplication.shared.delegate as! AppDelegate).realm
         loadCategories()
         tableView.reloadData()
     }
