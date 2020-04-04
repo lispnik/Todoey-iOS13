@@ -74,7 +74,12 @@ class ToDoListViewController: SwipeTableViewController {
         if let item = items?[indexPath.row] {
             cell.textLabel?.text = item.title
             cell.accessoryType = item.done ? .checkmark : .none
-            cell.backgroundColor = UIColor(hexString: item.color!)
+            let baseColor = UIColor(hexString: item.color!)!
+            let colors = [baseColor.lighten(byPercentage: 0.2)!.flatten(), baseColor.darken(byPercentage: 0.2)!.flatten()]
+            cell.backgroundColor = UIColor(gradientStyle: .leftToRight, withFrame: cell.frame, andColors: colors)
+            let contrastColor = ContrastColorOf(baseColor, returnFlat: true)
+            cell.tintColor = contrastColor
+            cell.textLabel?.textColor = contrastColor
         } else {
             cell.textLabel?.text = "No items"
             cell.accessoryType = .none
