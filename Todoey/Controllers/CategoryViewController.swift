@@ -26,6 +26,7 @@ class CategoryViewController: SwipeTableViewController {
             if let text = textField?.text {
                 let category = Category()
                 category.name = text
+                category.color = UIColor.randomFlat().hexValue()
                 self.save(category)
                 self.tableView.reloadData()
             }
@@ -39,6 +40,7 @@ class CategoryViewController: SwipeTableViewController {
         realm = (UIApplication.shared.delegate as! AppDelegate).realm
         loadCategories()
         tableView.rowHeight = 80.0
+        tableView.separatorStyle = .none
         tableView.reloadData()
     }
     
@@ -62,7 +64,9 @@ class CategoryViewController: SwipeTableViewController {
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = super.tableView(tableView, cellForRowAt: indexPath)
-        let name = categories?[indexPath.row].name ?? "No categories"
+        let category = categories?[indexPath.row]
+        let name = category?.name ?? "No categories"
+        cell.backgroundColor =  UIColor(hexString: category?.color ?? "1D9BF6")
         cell.textLabel?.text = name
         return cell
     }

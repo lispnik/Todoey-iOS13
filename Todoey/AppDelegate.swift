@@ -17,12 +17,26 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     lazy var realm: Realm = {
         var config = Realm.Configuration()
-        config.schemaVersion = 1
+        config.schemaVersion = 3
         config.migrationBlock = { (migration, oldSchemeVersion) in
             if oldSchemeVersion < 1 {
                 migration.enumerateObjects(ofType: Item.className()) { (oldObject, newObject) in
                     if let newObject = newObject {
                         newObject.setValue(Date(), forKeyPath: "dateCreated")
+                    }
+                }
+            }
+            if oldSchemeVersion < 2 {
+                migration.enumerateObjects(ofType: Item.className()) { (oldObject, newObject) in
+                    if let newObject = newObject {
+                        newObject.setValue(UIColor.white.hexValue(), forKeyPath: "color")
+                    }
+                }
+            }
+            if oldSchemeVersion < 3 {
+                migration.enumerateObjects(ofType: Category.className()) { (oldObject, newObject) in
+                    if let newObject = newObject {
+                        newObject.setValue(UIColor.white.hexValue(), forKeyPath: "color")
                     }
                 }
             }

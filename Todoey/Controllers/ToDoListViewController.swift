@@ -8,6 +8,7 @@
 
 import UIKit
 import RealmSwift
+import ChameleonFramework
 
 class ToDoListViewController: SwipeTableViewController {
     
@@ -37,6 +38,7 @@ class ToDoListViewController: SwipeTableViewController {
                     try self.realm.write {
                         let item = Item()
                         item.title = title
+                        item.color = UIColor.randomFlat().hexValue()
                         category.items.append(item)
                     }
                 } catch {
@@ -57,6 +59,7 @@ class ToDoListViewController: SwipeTableViewController {
         super.viewDidLoad()
         realm = (UIApplication.shared.delegate as! AppDelegate).realm
         tableView.rowHeight = 80.0
+        tableView.separatorStyle = .none
         searchBar.delegate = self
     }
     
@@ -71,6 +74,7 @@ class ToDoListViewController: SwipeTableViewController {
         if let item = items?[indexPath.row] {
             cell.textLabel?.text = item.title
             cell.accessoryType = item.done ? .checkmark : .none
+            cell.backgroundColor = UIColor(hexString: item.color!)
         } else {
             cell.textLabel?.text = "No items"
             cell.accessoryType = .none
